@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 import { Avatar } from '../react/Avatar.js';
 import { OFFICIAL_SHAPES } from '../core/shapes.js';
-import { OFFICIAL_COLORS } from '../core/colors.js';
+import { OFFICIAL_COLORS, resolveColorHex } from '../core/colors.js';
 import type { ColorDefinition } from '../core/types.js';
 
 export interface AvatarPickerProps {
   shape?: string;
-  color?: string;
+  color?: string | ColorDefinition;
   onShapeChange?: (shape: string) => void;
   onColorChange?: (color: string) => void;
   className?: string;
@@ -27,6 +27,8 @@ export function AvatarPicker({
   className = '',
   style = {}
 }: AvatarPickerProps) {
+  const activeColorHex = resolveColorHex(color);
+
   return (
     <div
       className={`gb-avatar-picker gravatar-picker ${className}`}
@@ -70,7 +72,7 @@ export function AvatarPicker({
                 key={sh}
                 shape={sh}
                 active={shape === sh}
-                color={color}
+                color={activeColorHex}
                 onClick={() => onShapeChange && onShapeChange(sh)}
               />
             ))}
@@ -83,7 +85,7 @@ export function AvatarPicker({
                 key={sh}
                 shape={sh}
                 active={shape === sh}
-                color={color}
+                color={activeColorHex}
                 onClick={() => onShapeChange && onShapeChange(sh)}
               />
             ))}
@@ -96,7 +98,7 @@ export function AvatarPicker({
                 key={sh}
                 shape={sh}
                 active={shape === sh}
-                color={color}
+                color={activeColorHex}
                 onClick={() => onShapeChange && onShapeChange(sh)}
               />
             ))}
@@ -134,7 +136,7 @@ export function AvatarPicker({
               <ColorSwatch
                 key={col.id}
                 color={col}
-                active={color.toLowerCase() === col.hex.toLowerCase()}
+                active={activeColorHex.toLowerCase() === col.hex.toLowerCase()}
                 onClick={() => onColorChange && onColorChange(col.hex)}
               />
             ))}
@@ -146,13 +148,13 @@ export function AvatarPicker({
               <ColorSwatch
                 key={col.id}
                 color={col}
-                active={color.toLowerCase() === col.hex.toLowerCase()}
+                active={activeColorHex.toLowerCase() === col.hex.toLowerCase()}
                 onClick={() => onColorChange && onColorChange(col.hex)}
               />
             ))}
 
             {/* Custom RGB Color Picker */}
-            <CustomColorPicker currentColor={color} onColorChange={onColorChange} />
+            <CustomColorPicker currentColor={activeColorHex} onColorChange={onColorChange} />
           </div>
         </div>
       </div>
@@ -164,7 +166,7 @@ interface ShapeButtonProps {
   shape: string;
   label?: string;
   active: boolean;
-  color: string;
+  color: string | ColorDefinition;
   onClick: () => void;
 }
 

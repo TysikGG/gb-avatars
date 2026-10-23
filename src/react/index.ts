@@ -25,6 +25,8 @@ export {
   OFFICIAL_COLORS,
   DEFAULT_COLOR,
   getAvatarAppearance,
+  resolveColorHex,
+  resolveEyeColorHex,
   EXPRESSIONS,
   EXPRESSION_ALIASES,
   POKE_TYPES,

@@ -1,6 +1,6 @@
 {
   "name": "gb-avatars",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Interactive procedural 3D vector avatar engine and React component with pure CPU SVG rasterization, dynamic perspective eye tracking, and spring physics. Zero WebGL, zero canvas.",
   "type": "module",
   "main": "./lib/index.cjs",

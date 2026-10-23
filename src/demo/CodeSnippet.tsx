@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useEngineConfig } from '../react/useEngineConfig';
+import { resolveColorHex, resolveEyeColorHex } from '../core/colors';
 import type { EngineConfig, DeepPartial } from '../core/config';
+import type { ColorDefinition } from '../core/types';
 
 export interface CodeSnippetProps {
   shape: string;
-  color: string;
-  eyeColor: string;
+  color: string | ColorDefinition;
+  eyeColor: string | ColorDefinition;
   expression: string;
 }
 
@@ -55,6 +57,9 @@ export function CodeSnippet({
     shape.startsWith('inline_') ||
     shape.startsWith('preview_');
 
+  const cleanColor = resolveColorHex(color);
+  const cleanEyeColor = resolveEyeColorHex(eyeColor);
+
   const hasConfigDiff = diff !== null && Object.keys(diff).length > 0;
   const configBlock = hasConfigDiff ? `${formatConfigDiff(diff)}\n` : '';
   const importStatement = hasConfigDiff
@@ -66,15 +71,15 @@ export function CodeSnippet({
   if (isSvg) {
     // Preserve entire SVG markup without truncation or ellipsis
     const cleanSvg = shape.trim().replace(/`/g, '\\`');
-    const eyeColorProp = eyeColor !== '#000000' ? `\n      eyeColor="${eyeColor}"` : '';
+    const eyeColorProp = cleanEyeColor !== '#000000' ? `\n      eyeColor="${cleanEyeColor}"` : '';
     const exprProp = expression !== 'neutral' ? `\n      expression="${expression}"` : '';
 
-    snippet = `${importStatement}\n\n${configBlock}const CUSTOM_SVG = \`${cleanSvg}\`;\n\nexport function MyBot() {\n  return (\n    <Avatar\n      svg={CUSTOM_SVG}\n      color="${color}"${eyeColorProp}${exprProp}\n      size={140}\n      isFollowingPointer\n      interactive\n    />\n  );\n}`;
+    snippet = `${importStatement}\n\n${configBlock}const CUSTOM_SVG = \`${cleanSvg}\`;\n\nexport function MyBot() {\n  return (\n    <Avatar\n      svg={CUSTOM_SVG}\n      color="${cleanColor}"${eyeColorProp}${exprProp}\n      size={140}\n      isFollowingPointer\n      interactive\n    />\n  );\n}`;
   } else {
-    const eyeColorProp = eyeColor !== '#000000' ? `\n      eyeColor="${eyeColor}"` : '';
+    const eyeColorProp = cleanEyeColor !== '#000000' ? `\n      eyeColor="${cleanEyeColor}"` : '';
     const exprProp = expression !== 'neutral' ? `\n      expression="${expression}"` : '';
 
-    snippet = `${importStatement}\n\n${configBlock}export function MyBot() {\n  return (\n    <Avatar\n      shape="${shape}"\n      color="${color}"${eyeColorProp}${exprProp}\n      size={140}\n      isFollowingPointer\n      interactive\n    />\n  );\n}`;
+    snippet = `${importStatement}\n\n${configBlock}export function MyBot() {\n  return (\n    <Avatar\n      shape="${shape}"\n      color="${cleanColor}"${eyeColorProp}${exprProp}\n      size={140}\n      isFollowingPointer\n      interactive\n    />\n  );\n}`;
   }
 
   const copyToClipboard = () => {

@@ -1,4 +1,4 @@
-import { createAppearance } from './engine';
+import { createAppearance } from './engine.js';
 import type { Appearance, ColorDefinition } from './types.js';
 
 /**
@@ -21,22 +21,78 @@ export const OFFICIAL_COLORS: ColorDefinition[] = [
 export const DEFAULT_COLOR = OFFICIAL_COLORS[5]; // Green #00C972
 
 /**
+ * Safely resolves any color input (hex string, CSS color, official color ID, or ColorDefinition object) to a hex string
+ */
+export function resolveColorHex(color?: string | ColorDefinition | null): string {
+  if (!color) return '#00C972';
+
+  if (typeof color === 'object') {
+    if ('hex' in color && typeof color.hex === 'string') {
+      return color.hex;
+    }
+    if ('id' in color && typeof color.id === 'string') {
+      const match = OFFICIAL_COLORS.find(c => c.id.toLowerCase() === color.id.toLowerCase());
+      if (match) return match.hex;
+    }
+    return '#00C972';
+  }
+
+  const str = String(color).trim();
+  const match = OFFICIAL_COLORS.find(c => c.id.toLowerCase() === str.toLowerCase());
+  if (match) return match.hex;
+
+  return str;
+}
+
+/**
+ * Safely resolves eye color input (hex string, CSS color, or ColorDefinition object) to a hex string
+ */
+export function resolveEyeColorHex(eyeColor?: string | ColorDefinition | null, fallback: string = '#000000'): string {
+  if (!eyeColor) return fallback;
+
+  if (typeof eyeColor === 'object') {
+    if ('eyeHex' in eyeColor && typeof eyeColor.eyeHex === 'string') {
+      return eyeColor.eyeHex;
+    }
+    if ('hex' in eyeColor && typeof eyeColor.hex === 'string') {
+      return eyeColor.hex;
+    }
+    return fallback;
+  }
+
+  return String(eyeColor).trim();
+}
+
+/**
  * Cache appearances by bodyHex + eyeHex to avoid redundant object allocations
  */
 const appearanceCache = new Map<string, Appearance>();
 
 /**
- * Create or retrieve cached appearance descriptor
+ * Create or retrieve cached appearance descriptor.
  *
- * @param bodyHex - Main body fill color (e.g. "#00C972")
- * @param eyeHex - Eye fill color (e.g. "#000000")
+ * Supports hex strings, official color IDs (e.g. "red", "blue"), or ColorDefinition objects.
+ *
+ * @param bodyColor - Main body fill color (hex string or ColorDefinition object)
+ * @param eyeColor - Eye fill color (hex string or ColorDefinition object)
  * @returns Appearance object required by renderSvgString
  */
-export function getAvatarAppearance(bodyHex: string = '#00C972', eyeHex: string = '#000000'): Appearance {
-  const key = `${bodyHex.toLowerCase()}_${eyeHex.toLowerCase()}`;
+export function getAvatarAppearance(
+  bodyColor: string | ColorDefinition = '#00C972',
+  eyeColor?: string | ColorDefinition
+): Appearance {
+  const bodyHex = resolveColorHex(bodyColor);
+
+  const defaultEyeHex = typeof bodyColor === 'object' && bodyColor !== null && 'eyeHex' in bodyColor && typeof bodyColor.eyeHex === 'string'
+    ? bodyColor.eyeHex
+    : '#000000';
+
+  const resolvedEyeHex = resolveEyeColorHex(eyeColor, defaultEyeHex);
+
+  const key = `${bodyHex.toLowerCase()}_${resolvedEyeHex.toLowerCase()}`;
   let appearance = appearanceCache.get(key);
   if (!appearance) {
-    appearance = createAppearance(bodyHex, eyeHex);
+    appearance = createAppearance(bodyHex, resolvedEyeHex);
     if (appearance) {
       appearanceCache.set(key, appearance);
     }

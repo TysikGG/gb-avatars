@@ -8,6 +8,10 @@ import {
   OFFICIAL_SHAPES,
   EXTENDED_SHAPES,
   OFFICIAL_COLORS,
+  DEFAULT_COLOR,
+  getAvatarAppearance,
+  resolveColorHex,
+  resolveEyeColorHex,
   EXPRESSIONS,
   registerCustomShape,
   resolveShape
@@ -163,6 +167,42 @@ it('should execute all 13 poke animations and blinking', () => {
   }
   assert.ok(minLidY < 0.1, `Blink failed to close eyelid (min lidY was ${minLidY})`);
   assert.strictEqual(motion.frame().eyes[0].lidY, 1.0, 'Blink failed to reopen eyelid to 1.0');
+});
+
+// 9. Color Resolution & ColorDefinition Support
+it('should resolve colors from hex, color names, and ColorDefinition objects without crashing', () => {
+  // Direct hex string
+  assert.strictEqual(resolveColorHex('#FF0000'), '#FF0000');
+  // Official color ID
+  assert.strictEqual(resolveColorHex('red'), '#FF263C');
+  assert.strictEqual(resolveColorHex('blue'), '#1084FE');
+  // ColorDefinition object
+  assert.strictEqual(resolveColorHex(DEFAULT_COLOR), DEFAULT_COLOR.hex);
+  assert.strictEqual(resolveColorHex(OFFICIAL_COLORS[0]), OFFICIAL_COLORS[0].hex);
+  // Custom object with hex
+  assert.strictEqual(resolveColorHex({ hex: '#abcdef' } as any), '#abcdef');
+  // Null / undefined fallback
+  assert.strictEqual(resolveColorHex(undefined), '#00C972');
+
+  // Eye color resolution
+  assert.strictEqual(resolveEyeColorHex('#111111'), '#111111');
+  assert.strictEqual(resolveEyeColorHex(OFFICIAL_COLORS[0]), OFFICIAL_COLORS[0].eyeHex);
+  assert.strictEqual(resolveEyeColorHex(undefined, '#123456'), '#123456');
+
+  // getAvatarAppearance with ColorDefinition
+  for (const col of OFFICIAL_COLORS) {
+    const app = getAvatarAppearance(col);
+    assert.ok(app);
+    assert.ok(app.inkPaint);
+  }
+
+  // getAvatarAppearance with color ID string
+  const redApp = getAvatarAppearance('red');
+  assert.ok(redApp);
+
+  // getAvatarAppearance with mixed object and string
+  const customApp = getAvatarAppearance(DEFAULT_COLOR, '#333333');
+  assert.ok(customApp);
 });
 
 console.log(`\n🎉 All ${passedTests} tests passed successfully!`);

@@ -152,8 +152,8 @@ export interface AvatarProps {
   scale?: number;
   eyeGap?: number;
   eyeShiftY?: number;
-  color?: string;
-  eyeColor?: string;
+  color?: string | ColorDefinition;
+  eyeColor?: string | ColorDefinition;
   size?: number;
   expression?: Expression | string;
   isFollowingPointer?: boolean;

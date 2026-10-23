@@ -39,7 +39,9 @@ export {
 export {
   OFFICIAL_COLORS,
   DEFAULT_COLOR,
-  getAvatarAppearance
+  getAvatarAppearance,
+  resolveColorHex,
+  resolveEyeColorHex
 } from './colors.js';
 
 export {
