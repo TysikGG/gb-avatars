@@ -1,0 +1,214 @@
+:root {
+  --bg: #0e1014;
+  --card-bg: #16181e;
+  --card-border: #242731;
+  --text-main: #f0f2f5;
+  --text-muted: #8b91a0;
+  --accent: #1084fe;
+  --accent-hover: #0072ea;
+  --success: #00C972;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 40%, #8b91a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.tags {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.tag {
+  background: #1c1e26;
+  border: 1px solid var(--card-border);
+  color: #a0a6b5;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* Stage Card */
+.stage-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  width: 100%;
+  padding: 28px 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  transition: transform 0.12s ease;
+  cursor: pointer;
+}
+
+.avatar-stage:active {
+  transform: scale(0.96);
+}
+
+/* Tab Switcher */
+.tab-buttons {
+  display: flex;
+  background: #111318;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 100%;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab-btn.active {
+  background: #252833;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Controls Card */
+.controls-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  width: 100%;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.chips-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip-btn {
+  background: #1c1e26;
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 6px 13px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s;
+  outline: none;
+}
+
+.chip-btn:hover {
+  background: #252833;
+  border-color: #383c4a;
+}
+
+.chip-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.chip-btn.action {
+  background: #1a2233;
+  border-color: #273652;
+  color: #92bfff;
+}
+
+.chip-btn.action:hover {
+  background: #23314d;
+  color: #fff;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  font-size: 0.74rem;
+  color: #606675;
+  margin-top: 10px;
+  line-height: 1.5;
+}

@@ -1,0 +1,87 @@
+{
+  "name": "gb-avatars",
+  "version": "1.0.0",
+  "description": "Interactive procedural 3D vector avatar engine and React component with pure CPU SVG rasterization, dynamic perspective eye tracking, and spring physics. Zero WebGL, zero canvas.",
+  "type": "module",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./react": {
+      "types": "./lib/react/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./core": {
+      "types": "./lib/core/index.d.ts",
+      "import": "./lib/index.js"
+    }
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:pages": "tsc && vite build",
+    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && vite build --config vite.config.lib.ts",
+    "preview": "vite preview",
+    "test": "npx tsx test/engine.test.ts && npx tsx test/golden-master.test.ts && npx tsx test/modules.test.ts && npx tsx test/custom-animations.test.ts && npx tsx test/config.test.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm test && npm run build:lib"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TysikGG/gb-avatars.git"
+  },
+  "homepage": "https://github.com/TysikGG/gb-avatars#readme",
+  "bugs": {
+    "url": "https://github.com/TysikGG/gb-avatars/issues"
+  },
+  "keywords": [
+    "avatar",
+    "3d-avatar",
+    "vector-3d",
+    "svg",
+    "react-avatar",
+    "eye-tracking",
+    "procedural-avatar",
+    "grok-bot",
+    "spring-physics"
+  ],
+  "author": "TysikGG",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsx": "^4.19.2",
+    "typescript": "^7.0.2",
+    "vite": "^5.4.11"
+  }
+}
