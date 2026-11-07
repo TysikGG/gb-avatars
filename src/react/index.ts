@@ -1,6 +1,7 @@
 export { Avatar, GbAvatar, Gravatar } from './Avatar.js';
 export { useAvatarGaze } from './useAvatarGaze.js';
 export { useEngineConfig } from './useEngineConfig.js';
+export { useAgentAvatar, type UseAgentAvatarOptions, type UseAgentAvatarResult } from './useAgentAvatar.js';
 
 export type { UseAvatarGazeOptions } from './useAvatarGaze.js';
 
@@ -39,13 +40,30 @@ export {
   resetEngineConfig,
   subscribeEngineConfig,
   getConfigDiff,
-  DEFAULT_ENGINE_CONFIG
+  DEFAULT_ENGINE_CONFIG,
+  RECIPES_CLIPS,
+  RECIPES_STATES,
+  LIFECYCLE_GROUPS,
+  getClipByName,
+  getStateDefinition,
+  createAgentStateMachine
 } from '../core/index.js';
 
 export type {
   OfficialShape,
   ExtendedShape,
   BuiltinShape,
+  AgentState,
+  AgentLifecycleState,
+  AgentReactionState,
+  AgentMorphState,
+  AgentProductState,
+  AgentBrandState,
+  LifecycleGroup,
+  StateRecipe,
+  ClipRecipe,
+  AgentStateMachine,
+  AgentStateMachineOptions,
   Expression,
   PokeType,
   AnimationDefinition,

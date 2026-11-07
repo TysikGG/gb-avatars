@@ -28,7 +28,8 @@ import type {
   GravatarHandle,
   MotionInstance,
   PokeType,
-  Expression
+  Expression,
+  AgentState
 } from '../core/types.js';
 
 export type {
@@ -40,7 +41,8 @@ export type {
   GravatarHandle,
   MotionInstance,
   PokeType,
-  Expression
+  Expression,
+  AgentState
 };
 
 const inlineSvgCache = new Map<string, string>();
@@ -131,6 +133,7 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(function Avatar(
     color = '#00C972',
     eyeColor = '#000000',
     size = 120,
+    state,
     expression = 'neutral',
     isFollowingPointer = false,
     lookAt = null,
@@ -139,6 +142,7 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(function Avatar(
     interactive = true,
     pokeOnClick = 'spin',
     onPoke,
+    onStateChange,
     className = '',
     style = {},
     onClick,
@@ -176,10 +180,14 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(function Avatar(
 
     const motion = createMotion({
       body: canonicalBody,
-      isGazeAlways: isFollowingPointer || lookAt !== null
+      isGazeAlways: isFollowingPointer || lookAt !== null,
+      state: state,
+      onStateChange: onStateChange
     });
 
-    motion.setExpression(currentExpression);
+    if (expression !== 'neutral') {
+      motion.setExpression(currentExpression);
+    }
     motionRef.current = motion;
 
     // Fast-forward 15 steps so the avatar rests smoothly in initial frame
@@ -218,10 +226,17 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(function Avatar(
 
   // Update expression
   useEffect(() => {
-    if (motionRef.current) {
+    if (motionRef.current && expression) {
       motionRef.current.setExpression(currentExpression);
     }
-  }, [currentExpression]);
+  }, [currentExpression, expression]);
+
+  // Update agent state
+  useEffect(() => {
+    if (motionRef.current && state && motionRef.current.setState) {
+      motionRef.current.setState(state);
+    }
+  }, [state]);
 
   // Handle manual lookAt gaze input
   useEffect(() => {
@@ -350,6 +365,14 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(function Avatar(
         if (motionRef.current) {
           motionRef.current.setExpression(normalizeExpression(expr));
         }
+      },
+      setState: (nextState: AgentState) => {
+        if (motionRef.current && motionRef.current.setState) {
+          motionRef.current.setState(nextState);
+        }
+      },
+      getState: (): AgentState => {
+        return (motionRef.current?.state as AgentState) ?? 'idle';
       },
       setGaze: (gaze: [number, number] | null) => {
         if (motionRef.current) {

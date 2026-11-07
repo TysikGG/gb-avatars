@@ -9,7 +9,9 @@
  * - Multi-body shape transitions with spring-weighted interpolation
  */
 
-import type { MotionInstance } from '../types';
+import type { MotionInstance, AgentState } from '../types';
+import type { AgentStateMachine } from '../states/types.js';
+import { createAgentStateMachine } from '../states/machine.js';
 import { createSpring, stepSpring, computeBlend } from '../physics/spring';
 import { getPokeDuration, computePokesOffset, type ActivePoke } from '../physics/pokes';
 import { computeGazeOrientation } from '../physics/gaze';
@@ -22,6 +24,9 @@ export interface MotionOptions {
   body?: string;
   isGazeAlways?: boolean;
   zoomMul?: number;
+  state?: AgentState;
+  seed?: number;
+  onStateChange?: (state: AgentState, prevState: AgentState) => void;
 }
 
 export interface KeyframePoint<T> {
@@ -377,6 +382,7 @@ export function createMotion(options: MotionOptions = {}): MotionInstance {
   let heldExpression: string | null = null;
   let pendingBlinkAction: (() => void) | null = null;
   let lookTransition: { t: number; fromRot: [number, number, number]; toRot: [number, number, number]; fromPos: [number, number]; toPos: [number, number] } | null = null;
+  let stateMachine: AgentStateMachine | null = null;
 
   let gaze = {
     isHeld: false,
@@ -480,9 +486,22 @@ export function createMotion(options: MotionOptions = {}): MotionInstance {
     ];
   };
 
-  return {
+  const motion: MotionInstance = {
     get isPlaying(): boolean {
       return isPlaying;
+    },
+    get state(): AgentState | undefined {
+      return stateMachine?.state;
+    },
+    setState(newState: AgentState) {
+      if (!stateMachine) {
+        stateMachine = createAgentStateMachine(motion, newState, {
+          seed: options.seed,
+          onStateChange: options.onStateChange
+        });
+      } else {
+        stateMachine.setState(newState);
+      }
     },
     get time(): number {
       return currentTime;
@@ -646,6 +665,10 @@ export function createMotion(options: MotionOptions = {}): MotionInstance {
       const stepDt = Math.min(dt, maxDt);
       updateGaze(stepDt);
 
+      if (stateMachine) {
+        stateMachine.advance(stepDt);
+      }
+
       if (isPlaying) {
         currentTime += stepDt;
         if (currentTime >= currentClip.duration) {
@@ -750,4 +773,13 @@ export function createMotion(options: MotionOptions = {}): MotionInstance {
       };
     }
   };
+
+  if (options.state) {
+    stateMachine = createAgentStateMachine(motion, options.state, {
+      seed: options.seed,
+      onStateChange: options.onStateChange
+    });
+  }
+
+  return motion;
 }

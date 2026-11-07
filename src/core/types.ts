@@ -1,4 +1,31 @@
 import React from 'react';
+import type {
+  AgentState,
+  AgentLifecycleState,
+  AgentReactionState,
+  AgentMorphState,
+  AgentProductState,
+  AgentBrandState,
+  LifecycleGroup,
+  StateRecipe,
+  ClipRecipe,
+  AgentStateMachine,
+  AgentStateMachineOptions
+} from './states/types.js';
+
+export type {
+  AgentState,
+  AgentLifecycleState,
+  AgentReactionState,
+  AgentMorphState,
+  AgentProductState,
+  AgentBrandState,
+  LifecycleGroup,
+  StateRecipe,
+  ClipRecipe,
+  AgentStateMachine,
+  AgentStateMachineOptions
+};
 
 export type OfficialShape =
   | 'blob'
@@ -132,12 +159,16 @@ export interface MotionInstance {
   lookAtCoords?(coords: [number, number], options?: any): void;
   cancelLookAt?(): void;
   setZoom?(zoom: number): void;
+  readonly state?: AgentState;
+  setState?(state: AgentState): void;
 }
 
 export interface AvatarHandle {
   poke(type?: PokeType | string): void;
   blink(): void;
   setExpression(expression: Expression | string): void;
+  setState(state: AgentState): void;
+  getState(): AgentState;
   setGaze(gaze: [number, number] | null): void;
   resetGaze(): void;
   getMotion(): MotionInstance | null;
@@ -155,6 +186,7 @@ export interface AvatarProps {
   color?: string | ColorDefinition;
   eyeColor?: string | ColorDefinition;
   size?: number;
+  state?: AgentState;
   expression?: Expression | string;
   isFollowingPointer?: boolean;
   lookAt?: [number, number] | null;
@@ -163,6 +195,7 @@ export interface AvatarProps {
   interactive?: boolean;
   pokeOnClick?: PokeType | string | false;
   onPoke?: (type: PokeType | string) => void;
+  onStateChange?: (state: AgentState, prevState: AgentState) => void;
   className?: string;
   style?: React.CSSProperties;
   onClick?: React.MouseEventHandler<HTMLDivElement>;

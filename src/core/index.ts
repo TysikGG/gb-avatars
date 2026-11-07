@@ -37,6 +37,15 @@ export {
 } from './shapes.js';
 
 export {
+  RECIPES_CLIPS,
+  RECIPES_STATES,
+  LIFECYCLE_GROUPS,
+  getClipByName,
+  getStateDefinition,
+  createAgentStateMachine
+} from './states/index.js';
+
+export {
   OFFICIAL_COLORS,
   DEFAULT_COLOR,
   getAvatarAppearance,
@@ -71,6 +80,17 @@ export type {
   OfficialShape,
   ExtendedShape,
   BuiltinShape,
+  AgentState,
+  AgentLifecycleState,
+  AgentReactionState,
+  AgentMorphState,
+  AgentProductState,
+  AgentBrandState,
+  LifecycleGroup,
+  StateRecipe,
+  ClipRecipe,
+  AgentStateMachine,
+  AgentStateMachineOptions,
   Expression,
   PokeType,
   AnimationDefinition,

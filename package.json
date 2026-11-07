@@ -32,7 +32,7 @@
     "build:pages": "tsc && vite build",
     "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && vite build --config vite.config.lib.ts",
     "preview": "vite preview",
-    "test": "npx tsx test/engine.test.ts && npx tsx test/golden-master.test.ts && npx tsx test/modules.test.ts && npx tsx test/custom-animations.test.ts && npx tsx test/config.test.ts",
+    "test": "npx tsx test/engine.test.ts && npx tsx test/golden-master.test.ts && npx tsx test/modules.test.ts && npx tsx test/custom-animations.test.ts && npx tsx test/config.test.ts && npx tsx test/states.test.ts",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm test && npm run build:lib"
   },

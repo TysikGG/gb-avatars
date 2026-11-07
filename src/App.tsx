@@ -7,13 +7,16 @@ import { TelemetryHUD } from './demo/TelemetryHUD';
 import { CustomShapeStudio } from './demo/CustomShapeStudio';
 import { ConfigStudio } from './demo/ConfigStudio';
 import { CodeSnippet } from './demo/CodeSnippet';
-import { AvatarHandle, PokeType, Expression } from './core/types';
+import { AvatarHandle, PokeType, Expression, AgentState } from './core/types';
+import { LIFECYCLE_GROUPS } from './core/index';
 
 export function App() {
   const [shape, setShape] = useState<string>('sparkle');
   const [color, setColor] = useState<string>('#00C972');
   const [eyeColor, setEyeColor] = useState<string>('#000000');
   const [expression, setExpression] = useState<Expression>('neutral');
+  const [agentState, setAgentState] = useState<AgentState>('idle');
+  const [activeGroupIndex, setActiveGroupIndex] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'picker' | 'studio' | 'config'>(() =>
     typeof window !== 'undefined' &&
     (window.location.hash === '#studio' || window.location.search.includes('studio'))
@@ -72,6 +75,7 @@ export function App() {
             color={color}
             eyeColor={eyeColor}
             size={160}
+            state={agentState}
             expression={expression}
             isFollowingPointer
             interactive
@@ -129,9 +133,62 @@ export function App() {
 
       {/* Expressions & Poke Actions */}
       <div className="controls-card">
+        {/* Agent Lifecycle States (53 States in 5 Groups) */}
+        <div>
+          <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>🤖 Agent Lifecycle States (53 States)</span>
+            <span style={{ fontSize: '0.8rem', opacity: 0.7, fontWeight: 400 }}>
+              Active: <strong>{agentState}</strong>
+            </span>
+          </div>
+
+          {/* Group category tabs */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
+            {LIFECYCLE_GROUPS.map((grp, idx) => (
+              <button
+                key={grp.label}
+                type="button"
+                onClick={() => setActiveGroupIndex(idx)}
+                style={{
+                  background: activeGroupIndex === idx ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.04)',
+                  color: activeGroupIndex === idx ? '#fff' : '#9aa0a6',
+                  border: activeGroupIndex === idx ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+                  borderRadius: '8px',
+                  padding: '4px 10px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {grp.label} ({grp.states.length})
+              </button>
+            ))}
+          </div>
+
+          {/* State chips */}
+          <div className="chips-group" style={{ maxHeight: '160px', overflowY: 'auto', padding: '2px' }}>
+            {LIFECYCLE_GROUPS[activeGroupIndex]?.states.map((st) => (
+              <button
+                key={st}
+                type="button"
+                className={`chip-btn ${agentState === st ? 'active' : ''}`}
+                onClick={() => {
+                  setAgentState(st);
+                  if (heroRef.current) {
+                    heroRef.current.setState(st);
+                  }
+                }}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Expressions */}
         <div>
-          <div className="section-title">Facial Expressions (9 Expressions)</div>
+          <div className="section-title">Facial Expressions Override (9 Expressions)</div>
           <div className="chips-group">
             {EXPRESSIONS.map((expr) => (
               <button
@@ -266,6 +323,7 @@ export function App() {
         color={color}
         eyeColor={eyeColor}
         expression={expression}
+        state={agentState}
       />
     </div>
   );
